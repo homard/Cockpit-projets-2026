@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit Projets 2026 - DSIM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        manche: {
+                            blue: '#1a4480',
+                            gold: '#e8a825',
+                            light: '#f0f4f8',
+                            dark: '#0d2240',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Source Sans Pro', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Source Sans Pro', sans-serif; }
+        .gradient-header {
+            background: linear-gradient(135deg, #1a4480 0%, #0d2240 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 3px solid #e8a825;
+        }
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: absolute;
+            left: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .checkbox-custom:checked {
+            background-color: #1a4480;
+            border-color: #1a4480;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .priority-p0 { border-left: 4px solid #dc2626; }
+        .priority-p1 { border-left: 4px solid #f59e0b; }
+        .priority-p2 { border-left: 4px solid #3b82f6; }
+        .priority-p3 { border-left: 4px solid #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // ========================================
+        // DATA - État initial des projets
+        // ========================================
+        const initialProjects = [
+            {
+                id: 1,
+                name: "Sensibilisation élus IA",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "Initialisation",
+                status: "En cours",
+                progress: 15,
+                alert: "red",
+                priority: "P0",
+                nextAction: "Caler date avec Cabinet + confirmer prestataire",
+                deadline: "2026-01-15",
+                responsible: "",
+                notes: "Journée en 2 temps : matin prestataire, après-midi atelier DSIM"
+            },
+            {
+                id: 2,
+                name: "Vote stratégie IA/Data",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "En cours",
+                status: "En cours",
+                progress: 40,
+                alert: "red",
+                priority: "P0",
+                nextAction: "Finaliser document stratégie (après sensibilisation)",
+                deadline: "2026-02-26",
+                responsible: "",
+                notes: "Session plénière du 03/04/2026"
+            },
+            {
+                id: 3,
+                name: "Plan sensibilisation agents",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "Initialisation",
+                status: "À planifier",
+                progress: 5,
+                alert: "green",
+                priority: "P2",
+                nextAction: "Cadrage après vote stratégie",
+                deadline: "2026-04-30",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 4,
+                name: "Plan communication IA",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "Initialisation",
+                status: "À planifier",
+                progress: 5,
+                alert: "green",
+                priority: "P2",
+                nextAction: "Cadrage après vote stratégie",
+                deadline: "2026-04-30",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 5,
+                name: "Tests outils IA réunions",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "En cours",
+                status: "En cours",
+                progress: 10,
+                alert: "yellow",
+                priority: "P1",
+                nextAction: "Lancer benchmark outils (transcription, résumé)",
+                deadline: "2026-01-31",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 6,
+                name: "Programme Copilot+ Microsoft",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "Initialisation",
+                status: "À planifier",
+                progress: 5,
+                alert: "yellow",
+                priority: "P1",
+                nextAction: "Se renseigner sur conditions programme Microsoft",
+                deadline: "2026-01-31",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 7,
+                name: "Feuille de route IA/Data",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "À lancer",
+                status: "À planifier",
+                progress: 0,
+                alert: "green",
+                priority: "P1",
+                nextAction: "Démarrage après vote stratégie",
+                deadline: "2026-06-30",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 8,
+                name: "Consultation AMO IA/Data",
+                program: "Stratégie IA/Data",
+                process: "Conception",
+                phase: "À lancer",
+                status: "À planifier",
+                progress: 5,
+                alert: "green",
+                priority: "P2",
+                nextAction: "Commencer trame CCTP AMO",
+                deadline: "2026-02-28",
+                responsible: "",
+                notes: ""
+            },
+            {
+                id: 9,
+                name: "Solution marchés publics",
+                program: "Modernisation",
+                process: "Conception",
+                phase: "Initialisation",
+                status: "En cours",
+                progress: 5,
+                alert: "yellow",
+                priority: "P1",
+                nextAction: "Organiser 1er COPIL de lancement",
+                deadline: "2026-01-31",
+                responsible: "",
+                notes: "Nouveau projet 2026"
+            },
+            {
+                id: 10,
+                name: "Cartographie SI Dir. Routes",
+                program: "Modernisation",
+                process: "Conception",
+                phase: "À lancer",
+                status: "À planifier",
+                progress: 0,
+                alert: "green",
+                priority: "P3",
+                nextAction: "Attente lancement",
+                deadline: "2026-06-30",
+                responsible: "",
+                notes: "Arrivée en cours d'année"
+            }
+        ];
+
+        const initialCalendar = [
+            { date: "2026-01-15", type: "cible", label: "Sensibilisation élus IA", project: "Stratégie IA/Data", status: "À confirmer", critical: false },
+            { date: "2026-01-23", type: "CP", label: "Commission permanente", project: "", status: "", critical: false },
+            { date: "2026-02-13", type: "CP", label: "Commission permanente", project: "", status: "", critical: false },
+            { date: "2026-02-26", type: "DLVD", label: "Validation Directeurs (DLVD CD04)", project: "Stratégie IA/Data", status: "Critique", critical: true },
+            { date: "2026-03-03", type: "DLVR", label: "Validation DGA (DLVR CD04)", project: "Stratégie IA/Data", status: "Important", critical: false },
+            { date: "2026-03-10", type: "CLecture", label: "Comité de lecture CD04", project: "Stratégie IA/Data", status: "", critical: false },
+            { date: "2026-03-13", type: "CP", label: "Commission permanente", project: "", status: "", critical: false },
+            { date: "2026-04-03", type: "SP", label: "SESSION PLÉNIÈRE", project: "Stratégie IA/Data", status: "Objectif", critical: true },
+            { date: "2026-04-24", type: "CP", label: "Commission permanente", project: "", status: "", critical: false },
+            { date: "2026-06-19", type: "CP", label: "Commission permanente", project: "", status: "", critical: false },
+            { date: "2026-07-03", type: "SP", label: "SESSION PLÉNIÈRE", project: "", status: "", critical: false },
+        ];
+
+        const initialWeeklyReviews = [];
+
+        // ========================================
+        // COMPOSANTS
+        // ========================================
+
+        // Navigation latérale
+        const Sidebar = ({ activeTab, setActiveTab }) => {
+            const navItems = [
+                { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
+                { id: 'projects', label: 'Projets', icon: '📁' },
+                { id: 'retroplanning', label: 'Rétro-planning IA', icon: '🎯' },
+                { id: 'calendar', label: 'Calendrier', icon: '📅' },
+                { id: 'checklist', label: 'Check-lists', icon: '✅' },
+                { id: 'weekly', label: 'Revue hebdo', icon: '🔄' },
+                { id: 'objectives', label: 'Objectifs 2026', icon: '🏆' },
+            ];
+
+            return (
+                <aside className="w-64 gradient-header min-h-screen fixed left-0 top-0 text-white">
+                    <div className="p-6 border-b border-white/10">
+                        <h1 className="font-display text-xl font-bold text-manche-gold">Cockpit Projets</h1>
+                        <p className="text-sm text-white/70 mt-1">DSIM - 2026</p>
+                    </div>
+                    <nav className="mt-4">
+                        {navItems.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id)}
+                                className={`nav-item w-full text-left px-6 py-3 flex items-center gap-3 transition-all ${activeTab === item.id ? 'active' : ''}`}
+                            >
+                                <span className="text-lg">{item.icon}</span>
+                                <span className="font-medium">{item.label}</span>
+                            </button>
+                        ))}
+                    </nav>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+                        <p className="text-xs text-white/50 text-center">
+                            Chef de projet<br/>Transformation Numérique
+                        </p>
+                    </div>
+                </aside>
+            );
+        };
+
+        // Carte statistique
+        const StatCard = ({ label, value, icon, color, subtext }) => (
+            <div className={`stat-card bg-white rounded-xl p-5 card-shadow transition-all duration-200 border-l-4 ${color}`}>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-gray-500 text-sm font-medium">{label}</p>
+                        <p className="text-3xl font-bold text-gray-800 mt-1">{value}</p>
+                        {subtext && <p className="text-xs text-gray-400 mt-1">{subtext}</p>}
+                    </div>
+                    <span className="text-2xl">{icon}</span>
+                </div>
+            </div>
+        );
+
+        // Badge d'alerte
+        const AlertBadge = ({ level }) => {
+            const colors = {
+                red: 'bg-red-100 text-red-700',
+                yellow: 'bg-yellow-100 text-yellow-700',
+                green: 'bg-green-100 text-green-700'
+            };
+            const labels = { red: '🔴', yellow: '🟡', green: '🟢' };
+            return (
+                <span className={`px-2 py-1 rounded-full text-sm ${colors[level]}`}>
+                    {labels[level]}
+                </span>
+            );
+        };
+
+        // Badge de priorité
+        const PriorityBadge = ({ priority }) => {
+            const colors = {
+                P0: 'bg-red-600 text-white',
+                P1: 'bg-orange-500 text-white',
+                P2: 'bg-blue-500 text-white',
+                P3: 'bg-gray-400 text-white'
+            };
+            return (
+                <span className={`px-2 py-0.5 rounded text-xs font-bold ${colors[priority]}`}>
+                    {priority}
+                </span>
+            );
+        };
+
+        // Barre de progression
+        const ProgressBar = ({ value }) => (
+            <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                    className="bg-manche-blue h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${value}%` }}
+                />
+            </div>
+        );
+
+        // ========================================
+        // PAGES
+        // ========================================
+
+        // Dashboard
+        const Dashboard = ({ projects, calendar }) => {
+            const today = new Date();
+            const stats = useMemo(() => ({
+                activeProjects: projects.filter(p => p.status === 'En cours').length,
+                alertProjects: projects.filter(p => p.alert === 'red').length,
+                upcomingDeadlines: calendar.filter(c => new Date(c.date) > today && new Date(c.date) < new Date(today.getTime() + 30*24*60*60*1000)).length,
+                overdueActions: projects.filter(p => new Date(p.deadline) < today && p.status !== 'Terminé').length
+            }), [projects, calendar]);
+
+            const nextDeadline = calendar.filter(c => new Date(c.date) >= today).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+            const criticalProjects = projects.filter(p => p.alert === 'red' || p.priority === 'P0');
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Tableau de bord</h2>
+                        <p className="text-gray-500">Vue d'ensemble de votre portefeuille projets</p>
+                    </div>
+
+                    {/* KPIs */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <StatCard 
+                            label="Projets actifs" 
+                            value={stats.activeProjects} 
+                            icon="📂" 
+                            color="border-manche-blue"
+                            subtext={`sur ${projects.length} projets`}
+                        />
+                        <StatCard 
+                            label="En alerte" 
+                            value={stats.alertProjects} 
+                            icon="⚠️" 
+                            color="border-red-500"
+                            subtext="nécessitent attention"
+                        />
+                        <StatCard 
+                            label="Échéances 30j" 
+                            value={stats.upcomingDeadlines} 
+                            icon="📅" 
+                            color="border-manche-gold"
+                        />
+                        <StatCard 
+                            label="Prochaine instance" 
+                            value={nextDeadline ? new Date(nextDeadline.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : '-'} 
+                            icon="🏛️" 
+                            color="border-green-500"
+                            subtext={nextDeadline?.label}
+                        />
+                    </div>
+
+                    {/* Projets critiques */}
+                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <span className="text-red-500">🔴</span> Projets prioritaires (P0 / En alerte)
+                        </h3>
+                        <div className="space-y-3">
+                            {criticalProjects.map(project => (
+                                <div key={project.id} className={`p-4 rounded-lg bg-gray-50 priority-${project.priority.toLowerCase()}`}>
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <PriorityBadge priority={project.priority} />
+                                                <span className="font-semibold text-gray-800">{project.name}</span>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{project.nextAction}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <AlertBadge level={project.alert} />
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                {new Date(project.deadline).toLocaleDateString('fr-FR')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-3">
+                                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                            <span>Avancement</span>
+                                            <span>{project.progress}%</span>
+                                        </div>
+                                        <ProgressBar value={project.progress} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Prochaines échéances */}
+                    <div className="bg-white rounded-xl card-shadow p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <span>🏛️</span> Prochaines échéances institutionnelles
+                        </h3>
+                        <div className="space-y-2">
+                            {calendar.filter(c => new Date(c.date) >= today).slice(0, 5).map((event, idx) => (
+                                <div 
+                                    key={idx} 
+                                    className={`flex items-center justify-between p-3 rounded-lg ${event.critical ? 'bg-red-50 border border-red-200' : 'bg-gray-50'}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-sm font-bold ${event.critical ? 'text-red-600' : 'text-manche-blue'}`}>
+                                            {new Date(event.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+                                        </span>
+                                        <span className="text-gray-700">{event.label}</span>
+                                    </div>
+                                    {event.project && (
+                                        <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+                                            {event.project}
+                                        </span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Liste des projets
+        const ProjectsList = ({ projects, setProjects }) => {
+            const [filter, setFilter] = useState('all');
+            const [editingId, setEditingId] = useState(null);
+
+            const filteredProjects = useMemo(() => {
+                if (filter === 'all') return projects;
+                if (filter === 'alert') return projects.filter(p => p.alert === 'red');
+                if (filter === 'active') return projects.filter(p => p.status === 'En cours');
+                return projects.filter(p => p.program === filter);
+            }, [projects, filter]);
+
+            const updateProject = (id, field, value) => {
+                setProjects(projects.map(p => p.id === id ? { ...p, [field]: value } : p));
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-800">Portefeuille Projets</h2>
+                            <p className="text-gray-500">{projects.length} projets au total</p>
+                        </div>
+                        <div className="flex gap-2">
+                            {['all', 'active', 'alert', 'Stratégie IA/Data', 'Modernisation'].map(f => (
+                                <button
+                                    key={f}
+                                    onClick={() => setFilter(f)}
+                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                        filter === f 
+                                            ? 'bg-manche-blue text-white' 
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {f === 'all' ? 'Tous' : f === 'active' ? 'Actifs' : f === 'alert' ? 'En alerte' : f}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl card-shadow overflow-hidden">
+                        <table className="w-full">
+                            <thead className="bg-gray-50 border-b">
+                                <tr>
+                                    <th className="text-left p-4 font-semibold text-gray-600">Projet</th>
+                                    <th className="text-left p-4 font-semibold text-gray-600">Phase</th>
+                                    <th className="text-left p-4 font-semibold text-gray-600">Statut</th>
+                                    <th className="text-center p-4 font-semibold text-gray-600">Prio</th>
+                                    <th className="text-center p-4 font-semibold text-gray-600">Alerte</th>
+                                    <th className="text-left p-4 font-semibold text-gray-600">Prochaine action</th>
+                                    <th className="text-center p-4 font-semibold text-gray-600">Échéance</th>
+                                    <th className="text-center p-4 font-semibold text-gray-600">%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredProjects.map(project => (
+                                    <tr 
+                                        key={project.id} 
+                                        className={`border-b hover:bg-gray-50 transition-colors priority-${project.priority.toLowerCase()}`}
+                                    >
+                                        <td className="p-4">
+                                            <p className="font-medium text-gray-800">{project.name}</p>
+                                            <p className="text-xs text-gray-500">{project.program}</p>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className="text-sm text-gray-600">{project.phase}</span>
+                                        </td>
+                                        <td className="p-4">
+                                            <select
+                                                value={project.status}
+                                                onChange={(e) => updateProject(project.id, 'status', e.target.value)}
+                                                className="text-sm border rounded px-2 py-1"
+                                            >
+                                                <option>À planifier</option>
+                                                <option>En cours</option>
+                                                <option>En attente</option>
+                                                <option>Terminé</option>
+                                            </select>
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <PriorityBadge priority={project.priority} />
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <select
+                                                value={project.alert}
+                                                onChange={(e) => updateProject(project.id, 'alert', e.target.value)}
+                                                className="text-sm border rounded px-2 py-1"
+                                            >
+                                                <option value="green">🟢</option>
+                                                <option value="yellow">🟡</option>
+                                                <option value="red">🔴</option>
+                                            </select>
+                                        </td>
+                                        <td className="p-4">
+                                            <input
+                                                type="text"
+                                                value={project.nextAction}
+                                                onChange={(e) => updateProject(project.id, 'nextAction', e.target.value)}
+                                                className="text-sm w-full border-b border-transparent hover:border-gray-300 focus:border-manche-blue focus:outline-none py-1"
+                                            />
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <input
+                                                type="date"
+                                                value={project.deadline}
+                                                onChange={(e) => updateProject(project.id, 'deadline', e.target.value)}
+                                                className="text-sm border rounded px-2 py-1"
+                                            />
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                <ProgressBar value={project.progress} />
+                                                <span className="text-xs text-gray-500 w-8">{project.progress}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        // Rétro-planning Stratégie IA
+        const RetroPlanning = () => {
+            const milestones = [
+                { date: "15-23/01/2026", label: "Sensibilisation élus", status: "À confirmer", description: "Journée sensibilisation + atelier co-construction", critical: false, highlight: true },
+                { date: "30/01/2026", label: "Finalisation stratégie", status: "À faire", description: "Intégrer éléments co-construits dans document", critical: false, highlight: false },
+                { date: "10/02/2026", label: "Relecture interne", status: "À faire", description: "Relecture par chef de service + ajustements", critical: false, highlight: false },
+                { date: "20/02/2026", label: "Pré-validation", status: "À faire", description: "Validation informelle direction", critical: false, highlight: false },
+                { date: "26/02/2026", label: "DLVD CD04", status: "Critique", description: "Validation directeurs - DEADLINE", critical: true, highlight: false },
+                { date: "03/03/2026", label: "DLVR CD04", status: "Important", description: "Validation DGA", critical: false, highlight: false },
+                { date: "10/03/2026", label: "Comité lecture", status: "À faire", description: "Présentation aux élus", critical: false, highlight: false },
+                { date: "03/04/2026", label: "SESSION PLÉNIÈRE", status: "Objectif", description: "Vote de la délibération", critical: true, highlight: true },
+            ];
+
+            const immediateActions = [
+                { priority: "P0", action: "Proposer dates pour sensibilisation élus (15-23 janvier)", deadline: "10/01/2026", done: false },
+                { priority: "P0", action: "Confirmer disponibilité prestataire sensibilisation", deadline: "10/01/2026", done: false },
+                { priority: "P0", action: "Briefer facilitateurs DSIM sur atelier après-midi", deadline: "13/01/2026", done: false },
+                { priority: "P1", action: "Lister les éléments de stratégie à co-construire", deadline: "10/01/2026", done: false },
+                { priority: "P1", action: "Préparer trame document stratégie (parties rédigées)", deadline: "15/01/2026", done: false },
+            ];
+
+            const [actions, setActions] = useState(immediateActions);
+
+            const toggleAction = (index) => {
+                const newActions = [...actions];
+                newActions[index].done = !newActions[index].done;
+                setActions(newActions);
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Rétro-planning Stratégie IA/Data</h2>
+                        <p className="text-gray-500">Session plénière du 03/04/2026</p>
+                    </div>
+
+                    {/* Timeline visuelle */}
+                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-6">📅 Jalons clés</h3>
+                        <div className="relative pl-8">
+                            <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                            {milestones.map((milestone, idx) => (
+                                <div key={idx} className="relative mb-6 last:mb-0">
+                                    <div className={`timeline-dot ${
+                                        milestone.critical ? 'bg-red-500' : 
+                                        milestone.highlight ? 'bg-manche-gold' : 'bg-manche-blue'
+                                    }`}></div>
+                                    <div className={`ml-4 p-4 rounded-lg ${
+                                        milestone.critical ? 'bg-red-50 border border-red-200' :
+                                        milestone.highlight ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50'
+                                    }`}>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <span className={`text-sm font-bold ${milestone.critical ? 'text-red-600' : 'text-manche-blue'}`}>
+                                                    {milestone.date}
+                                                </span>
+                                                <h4 className="font-semibold text-gray-800">{milestone.label}</h4>
+                                                <p className="text-sm text-gray-600">{milestone.description}</p>
+                                            </div>
+                                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                                milestone.status === 'Critique' ? 'bg-red-100 text-red-700' :
+                                                milestone.status === 'Objectif' ? 'bg-green-100 text-green-700' :
+                                                milestone.status === 'À confirmer' ? 'bg-yellow-100 text-yellow-700' :
+                                                'bg-gray-100 text-gray-600'
+                                            }`}>
+                                                {milestone.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Dépendances critiques */}
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
+                        <h3 className="text-lg font-bold text-red-800 mb-4">⚠️ Dépendances critiques</h3>
+                        <ul className="space-y-2 text-red-700">
+                            <li>1. La sensibilisation élus <strong>DOIT</strong> avoir lieu avant fin janvier</li>
+                            <li>2. Le prestataire pour la matinée doit être confirmé rapidement</li>
+                            <li>3. Les facilitateurs DSIM doivent construire le déroulé de l'atelier</li>
+                            <li>4. Les éléments co-construits doivent être intégrables dans la stratégie</li>
+                        </ul>
+                    </div>
+
+                    {/* Actions immédiates */}
+                    <div className="bg-white rounded-xl card-shadow p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4">🚀 Actions immédiates</h3>
+                        <div className="space-y-2">
+                            {actions.map((action, idx) => (
+                                <div 
+                                    key={idx}
+                                    onClick={() => toggleAction(idx)}
+                                    className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                                        action.done ? 'bg-green-50' : 'bg-gray-50 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <input 
+                                        type="checkbox" 
+                                        checked={action.done}
+                                        onChange={() => {}}
+                                        className="w-5 h-5 rounded border-gray-300"
+                                    />
+                                    <PriorityBadge priority={action.priority} />
+                                    <span className={`flex-1 ${action.done ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                        {action.action}
+                                    </span>
+                                    <span className="text-sm text-gray-500">{action.deadline}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Calendrier
+        const Calendar = ({ calendar }) => {
+            const today = new Date();
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet'];
+            
+            const eventsByMonth = useMemo(() => {
+                const grouped = {};
+                calendar.forEach(event => {
+                    const month = new Date(event.date).getMonth();
+                    if (!grouped[month]) grouped[month] = [];
+                    grouped[month].push(event);
+                });
+                return grouped;
+            }, [calendar]);
+
+            const getEventStyle = (event) => {
+                if (event.critical) return 'bg-red-100 border-red-300 text-red-800';
+                if (event.type === 'SP') return 'bg-green-100 border-green-300 text-green-800';
+                if (event.type === 'CP') return 'bg-blue-100 border-blue-300 text-blue-800';
+                if (event.type === 'cible') return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+                return 'bg-gray-100 border-gray-300 text-gray-800';
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Calendrier Institutionnel 2026</h2>
+                        <p className="text-gray-500">Commissions permanentes, sessions plénières et jalons projets</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {months.map((month, monthIdx) => (
+                            <div key={month} className="bg-white rounded-xl card-shadow p-4">
+                                <h3 className="font-bold text-gray-800 mb-3 pb-2 border-b">{month} 2026</h3>
+                                <div className="space-y-2">
+                                    {(eventsByMonth[monthIdx] || []).map((event, idx) => (
+                                        <div 
+                                            key={idx}
+                                            className={`p-2 rounded border text-sm ${getEventStyle(event)}`}
+                                        >
+                                            <div className="flex justify-between items-start">
+                                                <span className="font-semibold">
+                                                    {new Date(event.date).toLocaleDateString('fr-FR', { day: '2-digit' })}
+                                                </span>
+                                                <span className="text-xs px-1.5 py-0.5 rounded bg-white/50">
+                                                    {event.type}
+                                                </span>
+                                            </div>
+                                            <p className="mt-1">{event.label}</p>
+                                            {event.project && (
+                                                <p className="text-xs mt-1 opacity-75">{event.project}</p>
+                                            )}
+                                        </div>
+                                    ))}
+                                    {!eventsByMonth[monthIdx]?.length && (
+                                        <p className="text-gray-400 text-sm italic">Aucun événement</p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Légende */}
+                    <div className="mt-6 bg-white rounded-xl card-shadow p-4">
+                        <h4 className="font-semibold text-gray-700 mb-3">Légende</h4>
+                        <div className="flex flex-wrap gap-4 text-sm">
+                            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-blue-400"></span> CP = Commission Permanente</span>
+                            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-green-400"></span> SP = Session Plénière</span>
+                            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-yellow-400"></span> Jalon projet</span>
+                            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-red-400"></span> Critique</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Check-lists
+        const Checklists = () => {
+            const [activeChecklist, setActiveChecklist] = useState('conception');
+            
+            const conceptionChecklist = [
+                { section: "STRUCTURER ET CADRER LE PROJET", tasks: [
+                    { label: "Nommer le co-pilote DSIM", done: false },
+                    { label: "Partager les objectifs, enjeux et attendus", done: false },
+                    { label: "Créer l'équipe projet", done: false },
+                    { label: "Organiser les canaux de communication Teams", done: false },
+                    { label: "Poursuivre et finaliser l'étude du besoin", done: false },
+                    { label: "Évaluer les risques et opportunités", done: false },
+                    { label: "Co-rédiger et valider la lettre de mission", done: false },
+                ]},
+                { section: "COPIL DE LANCEMENT", tasks: [
+                    { label: "Préparer le support COPIL", done: false },
+                    { label: "Tenir le COPIL de lancement", done: false },
+                    { label: "Rédiger et diffuser le compte-rendu", done: false },
+                    { label: "Changer la phase Seatable : Lancement", done: false },
+                ]},
+                { section: "GÉRER LA CONCEPTION", tasks: [
+                    { label: "Approfondir la faisabilité technique et financière", done: false },
+                    { label: "Élaborer le cahier des charges avec COTECH dédiés", done: false },
+                    { label: "Intégrer les clauses de sécurité (RSSI)", done: false },
+                    { label: "Intégrer l'accessibilité", done: false },
+                    { label: "Intégrer la gestion des données personnelles (DPO)", done: false },
+                    { label: "Choisir la procédure d'achat", done: false },
+                ]},
+                { section: "VALIDER LA CONCEPTION", tasks: [
+                    { label: "Validation du scénario en COPIL", done: false },
+                    { label: "Validation du choix de la solution", done: false },
+                    { label: "Validation du planning de déploiement", done: false },
+                ]},
+            ];
+
+            const mepChecklist = [
+                { section: "CONSTRUIRE LE SERVICE", tasks: [
+                    { label: "Préparer les environnements techniques", done: false },
+                    { label: "Développer/configurer le service", done: false },
+                    { label: "Initialiser le dossier d'exploitation", done: false },
+                ]},
+                { section: "MOM - MISE EN ORDRE DE MARCHE", tasks: [
+                    { label: "Vérifier composants techniques opérationnels", done: false },
+                    { label: "Préparer support COTECH/COPIL MOM", done: false },
+                    { label: "Rédiger PV de MOM", done: false },
+                ]},
+                { section: "VA - VÉRIFICATION D'APTITUDE", tasks: [
+                    { label: "Exécuter les tests fonctionnels", done: false },
+                    { label: "Former les utilisateurs pilotes", done: false },
+                    { label: "Rédiger PV de VA", done: false },
+                ]},
+                { section: "VSR - VÉRIFICATION SERVICE RÉGULIER", tasks: [
+                    { label: "Vérifier stabilité du service en production", done: false },
+                    { label: "Rédiger PV de VSR", done: false },
+                    { label: "Archiver les documents projet", done: false },
+                ]},
+            ];
+
+            const [conception, setConception] = useState(conceptionChecklist);
+            const [mep, setMep] = useState(mepChecklist);
+
+            const currentChecklist = activeChecklist === 'conception' ? conception : mep;
+            const setCurrentChecklist = activeChecklist === 'conception' ? setConception : setMep;
+
+            const toggleTask = (sectionIdx, taskIdx) => {
+                const newChecklist = [...currentChecklist];
+                newChecklist[sectionIdx].tasks[taskIdx].done = !newChecklist[sectionIdx].tasks[taskIdx].done;
+                setCurrentChecklist(newChecklist);
+            };
+
+            const totalTasks = currentChecklist.reduce((acc, s) => acc + s.tasks.length, 0);
+            const doneTasks = currentChecklist.reduce((acc, s) => acc + s.tasks.filter(t => t.done).length, 0);
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Check-lists Méthodologie DSIM</h2>
+                        <p className="text-gray-500">Suivez les étapes de vos processus</p>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="flex gap-2 mb-6">
+                        <button
+                            onClick={() => setActiveChecklist('conception')}
+                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                activeChecklist === 'conception' 
+                                    ? 'bg-manche-blue text-white' 
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                        >
+                            Conception
+                        </button>
+                        <button
+                            onClick={() => setActiveChecklist('mep')}
+                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                activeChecklist === 'mep' 
+                                    ? 'bg-manche-blue text-white' 
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
+                        >
+                            Mise en œuvre
+                        </button>
+                    </div>
+
+                    {/* Progress */}
+                    <div className="bg-white rounded-xl card-shadow p-4 mb-6">
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="font-medium text-gray-700">Progression globale</span>
+                            <span className="text-manche-blue font-bold">{doneTasks}/{totalTasks} tâches</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                            <div 
+                                className="bg-manche-gold h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${(doneTasks/totalTasks)*100}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Checklist */}
+                    <div className="space-y-4">
+                        {currentChecklist.map((section, sectionIdx) => (
+                            <div key={sectionIdx} className="bg-white rounded-xl card-shadow overflow-hidden">
+                                <div className="bg-manche-blue text-white px-4 py-3 font-semibold">
+                                    {section.section}
+                                </div>
+                                <div className="p-4 space-y-2">
+                                    {section.tasks.map((task, taskIdx) => (
+                                        <div 
+                                            key={taskIdx}
+                                            onClick={() => toggleTask(sectionIdx, taskIdx)}
+                                            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                                                task.done ? 'bg-green-50' : 'bg-gray-50 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            <input 
+                                                type="checkbox" 
+                                                checked={task.done}
+                                                onChange={() => {}}
+                                                className="w-5 h-5 rounded border-gray-300"
+                                            />
+                                            <span className={task.done ? 'line-through text-gray-400' : 'text-gray-700'}>
+                                                {task.label}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // Revue hebdomadaire
+        const WeeklyReview = () => {
+            const [reviews, setReviews] = useState([]);
+            const [currentReview, setCurrentReview] = useState({
+                weekOf: new Date().toISOString().split('T')[0],
+                priorities: '',
+                deadlines: '',
+                risks: '',
+                achievements: '',
+                lessons: '',
+                nextWeek: '',
+            });
+
+            const saveReview = () => {
+                setReviews([...reviews, { ...currentReview, id: Date.now() }]);
+                setCurrentReview({
+                    weekOf: new Date().toISOString().split('T')[0],
+                    priorities: '',
+                    deadlines: '',
+                    risks: '',
+                    achievements: '',
+                    lessons: '',
+                    nextWeek: '',
+                });
+            };
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Revue Hebdomadaire</h2>
+                        <p className="text-gray-500">Rituels lundi matin et vendredi après-midi</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Revue Lundi */}
+                        <div className="bg-white rounded-xl card-shadow p-6">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <span>📅</span> Revue Lundi - Planification
+                            </h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Semaine du
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={currentReview.weekOf}
+                                        onChange={(e) => setCurrentReview({...currentReview, weekOf: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        🎯 Top 3 priorités de la semaine
+                                    </label>
+                                    <textarea
+                                        value={currentReview.priorities}
+                                        onChange={(e) => setCurrentReview({...currentReview, priorities: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-24"
+                                        placeholder="1. ...&#10;2. ...&#10;3. ..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        📅 Échéances de la semaine
+                                    </label>
+                                    <textarea
+                                        value={currentReview.deadlines}
+                                        onChange={(e) => setCurrentReview({...currentReview, deadlines: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-20"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        ⚠️ Risques / Points de vigilance
+                                    </label>
+                                    <textarea
+                                        value={currentReview.risks}
+                                        onChange={(e) => setCurrentReview({...currentReview, risks: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-20"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Revue Vendredi */}
+                        <div className="bg-white rounded-xl card-shadow p-6">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <span>✅</span> Revue Vendredi - Bilan
+                            </h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        🏆 Réalisations de la semaine
+                                    </label>
+                                    <textarea
+                                        value={currentReview.achievements}
+                                        onChange={(e) => setCurrentReview({...currentReview, achievements: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-24"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        💡 Leçons apprises
+                                    </label>
+                                    <textarea
+                                        value={currentReview.lessons}
+                                        onChange={(e) => setCurrentReview({...currentReview, lessons: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-20"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        ➡️ À préparer pour la semaine prochaine
+                                    </label>
+                                    <textarea
+                                        value={currentReview.nextWeek}
+                                        onChange={(e) => setCurrentReview({...currentReview, nextWeek: e.target.value})}
+                                        className="w-full border rounded-lg px-3 py-2 h-20"
+                                    />
+                                </div>
+                                <button
+                                    onClick={saveReview}
+                                    className="w-full bg-manche-blue text-white py-2 rounded-lg font-medium hover:bg-manche-dark transition-colors"
+                                >
+                                    Sauvegarder la revue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Questions rituelles */}
+                    <div className="mt-6 bg-manche-light rounded-xl p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4">💡 Questions rituelles</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 className="font-semibold text-manche-blue mb-2">LUNDI</h4>
+                                <ul className="text-sm text-gray-600 space-y-1">
+                                    <li>1. Quelles sont mes 3 priorités absolues ?</li>
+                                    <li>2. Quelles échéances institutionnelles arrivent ?</li>
+                                    <li>3. Quels projets nécessitent une attention particulière ?</li>
+                                    <li>4. De quoi ai-je besoin pour avancer ?</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-manche-blue mb-2">VENDREDI</h4>
+                                <ul className="text-sm text-gray-600 space-y-1">
+                                    <li>1. Qu'ai-je accompli dont je suis fier(e) ?</li>
+                                    <li>2. Qu'est-ce qui n'a pas avancé et pourquoi ?</li>
+                                    <li>3. Qu'ai-je appris cette semaine ?</li>
+                                    <li>4. Que dois-je préparer pour la semaine prochaine ?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Objectifs 2026
+        const Objectives = () => {
+            const [objectives, setObjectives] = useState([
+                { id: 1, objective: "Objectif stratégique 1", keyResults: [
+                    { kr: "À définir après entretien annuel", target: "", current: "", deadline: "30/06/2026" },
+                ]},
+            ]);
+
+            return (
+                <div className="animate-fade-in">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Objectifs 2026</h2>
+                        <p className="text-gray-500">Méthode OKR - À compléter après l'entretien annuel</p>
+                    </div>
+
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
+                        <h3 className="font-bold text-yellow-800 mb-2">📅 Entretien annuel dans ~15 jours</h3>
+                        <p className="text-yellow-700">
+                            Cette section sera à compléter après ton entretien annuel avec tes objectifs validés.
+                            La méthode OKR te permettra de suivre ta progression tout au long de l'année.
+                        </p>
+                    </div>
+
+                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4">💡 Rappel méthode OKR</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-manche-blue mb-2">Objectif (O)</h4>
+                                <p className="text-gray-600">Qualitatif, inspirant, ambitieux. Répond à "Où veux-je aller ?"</p>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <h4 className="font-semibold text-manche-blue mb-2">Résultat Clé (KR)</h4>
+                                <p className="text-gray-600">Quantitatif, mesurable, spécifique. Répond à "Comment savoir si j'y suis ?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl card-shadow p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-4">🎯 Mes objectifs 2026</h3>
+                        <p className="text-gray-500 italic">À compléter après l'entretien annuel...</p>
+                    </div>
+                </div>
+            );
+        };
+
+        // ========================================
+        // APP PRINCIPALE
+        // ========================================
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [projects, setProjects] = useState(() => {
+                const saved = localStorage.getItem('cockpit-projects');
+                return saved ? JSON.parse(saved) : initialProjects;
+            });
+            const [calendar] = useState(initialCalendar);
+
+            // Sauvegarde automatique
+            useEffect(() => {
+                localStorage.setItem('cockpit-projects', JSON.stringify(projects));
+            }, [projects]);
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'dashboard': return <Dashboard projects={projects} calendar={calendar} />;
+                    case 'projects': return <ProjectsList projects={projects} setProjects={setProjects} />;
+                    case 'retroplanning': return <RetroPlanning />;
+                    case 'calendar': return <Calendar calendar={calendar} />;
+                    case 'checklist': return <Checklists />;
+                    case 'weekly': return <WeeklyReview />;
+                    case 'objectives': return <Objectives />;
+                    default: return <Dashboard projects={projects} calendar={calendar} />;
+                }
+            };
+
+            return (
+                <div className="flex">
+                    <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <main className="ml-64 flex-1 p-8 min-h-screen">
+                        {renderContent()}
+                    </main>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>

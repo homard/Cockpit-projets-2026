@@ -469,10 +469,237 @@
             );
         };
 
+        // Modal d'édition de projet
+        const ProjectModal = ({ project, onSave, onClose }) => {
+            const [formData, setFormData] = useState(project || {
+                id: Date.now(),
+                name: '',
+                program: 'Stratégie IA/Data',
+                process: 'Conception',
+                phase: 'À lancer',
+                status: 'À planifier',
+                progress: 0,
+                alert: 'green',
+                priority: 'P2',
+                nextAction: '',
+                deadline: new Date().toISOString().split('T')[0],
+                responsible: '',
+                notes: ''
+            });
+
+            const handleChange = (field, value) => {
+                setFormData({ ...formData, [field]: value });
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSave(formData);
+                onClose();
+            };
+
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+                    <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="gradient-header text-white px-6 py-4 flex justify-between items-center sticky top-0">
+                            <h3 className="text-xl font-bold">
+                                {project ? '✏️ Modifier le projet' : '➕ Nouveau projet'}
+                            </h3>
+                            <button onClick={onClose} className="text-white hover:text-manche-gold text-2xl">&times;</button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Nom du projet */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                        Nom du projet <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => handleChange('name', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Programme */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Programme</label>
+                                    <select
+                                        value={formData.program}
+                                        onChange={(e) => handleChange('program', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option>Stratégie IA/Data</option>
+                                        <option>Modernisation</option>
+                                        <option>Autre</option>
+                                    </select>
+                                </div>
+
+                                {/* Processus */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Processus</label>
+                                    <select
+                                        value={formData.process}
+                                        onChange={(e) => handleChange('process', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option>Conception</option>
+                                        <option>Mise en œuvre</option>
+                                        <option>Exploitation</option>
+                                    </select>
+                                </div>
+
+                                {/* Phase */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Phase</label>
+                                    <select
+                                        value={formData.phase}
+                                        onChange={(e) => handleChange('phase', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option>À lancer</option>
+                                        <option>Initialisation</option>
+                                        <option>En cours</option>
+                                        <option>Finalisation</option>
+                                        <option>Clôturé</option>
+                                    </select>
+                                </div>
+
+                                {/* Statut */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Statut</label>
+                                    <select
+                                        value={formData.status}
+                                        onChange={(e) => handleChange('status', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option>À planifier</option>
+                                        <option>En cours</option>
+                                        <option>En attente</option>
+                                        <option>Terminé</option>
+                                    </select>
+                                </div>
+
+                                {/* Priorité */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Priorité</label>
+                                    <select
+                                        value={formData.priority}
+                                        onChange={(e) => handleChange('priority', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option>P0</option>
+                                        <option>P1</option>
+                                        <option>P2</option>
+                                        <option>P3</option>
+                                    </select>
+                                </div>
+
+                                {/* Alerte */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Niveau d'alerte</label>
+                                    <select
+                                        value={formData.alert}
+                                        onChange={(e) => handleChange('alert', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    >
+                                        <option value="green">🟢 Vert - OK</option>
+                                        <option value="yellow">🟡 Jaune - Vigilance</option>
+                                        <option value="red">🔴 Rouge - Alerte</option>
+                                    </select>
+                                </div>
+
+                                {/* Progression */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                        Progression ({formData.progress}%)
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={formData.progress}
+                                        onChange={(e) => handleChange('progress', parseInt(e.target.value))}
+                                        className="w-full"
+                                    />
+                                </div>
+
+                                {/* Échéance */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Échéance</label>
+                                    <input
+                                        type="date"
+                                        value={formData.deadline}
+                                        onChange={(e) => handleChange('deadline', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                    />
+                                </div>
+
+                                {/* Responsable */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Responsable</label>
+                                    <input
+                                        type="text"
+                                        value={formData.responsible}
+                                        onChange={(e) => handleChange('responsible', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        placeholder="Nom du responsable"
+                                    />
+                                </div>
+
+                                {/* Prochaine action */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Prochaine action</label>
+                                    <input
+                                        type="text"
+                                        value={formData.nextAction}
+                                        onChange={(e) => handleChange('nextAction', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        placeholder="Quelle est la prochaine étape ?"
+                                    />
+                                </div>
+
+                                {/* Notes */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Notes</label>
+                                    <textarea
+                                        value={formData.notes}
+                                        onChange={(e) => handleChange('notes', e.target.value)}
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none h-24"
+                                        placeholder="Notes additionnelles..."
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Boutons d'action */}
+                            <div className="flex gap-3 pt-4 border-t">
+                                <button
+                                    type="submit"
+                                    className="flex-1 bg-manche-blue text-white py-2 px-4 rounded-lg font-medium hover:bg-manche-dark transition-colors"
+                                >
+                                    💾 Enregistrer
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="px-6 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                >
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
         // Liste des projets
         const ProjectsList = ({ projects, setProjects }) => {
             const [filter, setFilter] = useState('all');
-            const [editingId, setEditingId] = useState(null);
+            const [editingProject, setEditingProject] = useState(null);
+            const [isModalOpen, setIsModalOpen] = useState(false);
 
             const filteredProjects = useMemo(() => {
                 if (filter === 'all') return projects;
@@ -485,6 +712,37 @@
                 setProjects(projects.map(p => p.id === id ? { ...p, [field]: value } : p));
             };
 
+            const handleSaveProject = (projectData) => {
+                if (projectData.id && projects.find(p => p.id === projectData.id)) {
+                    // Mise à jour d'un projet existant
+                    setProjects(projects.map(p => p.id === projectData.id ? projectData : p));
+                } else {
+                    // Ajout d'un nouveau projet
+                    setProjects([...projects, { ...projectData, id: Date.now() }]);
+                }
+            };
+
+            const handleDeleteProject = (id) => {
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
+                    setProjects(projects.filter(p => p.id !== id));
+                }
+            };
+
+            const openEditModal = (project) => {
+                setEditingProject(project);
+                setIsModalOpen(true);
+            };
+
+            const openNewModal = () => {
+                setEditingProject(null);
+                setIsModalOpen(true);
+            };
+
+            const closeModal = () => {
+                setIsModalOpen(false);
+                setEditingProject(null);
+            };
+
             return (
                 <div className="animate-fade-in">
                     <div className="flex justify-between items-center mb-6">
@@ -492,14 +750,20 @@
                             <h2 className="text-2xl font-bold text-gray-800">Portefeuille Projets</h2>
                             <p className="text-gray-500">{projects.length} projets au total</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
+                            <button
+                                onClick={openNewModal}
+                                className="px-4 py-2 bg-manche-gold text-white rounded-lg font-medium hover:bg-yellow-600 transition-colors flex items-center gap-2"
+                            >
+                                <span>➕</span> Nouveau projet
+                            </button>
                             {['all', 'active', 'alert', 'Stratégie IA/Data', 'Modernisation'].map(f => (
                                 <button
                                     key={f}
                                     onClick={() => setFilter(f)}
                                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                                        filter === f 
-                                            ? 'bg-manche-blue text-white' 
+                                        filter === f
+                                            ? 'bg-manche-blue text-white'
                                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                     }`}
                                 >
@@ -521,12 +785,13 @@
                                     <th className="text-left p-4 font-semibold text-gray-600">Prochaine action</th>
                                     <th className="text-center p-4 font-semibold text-gray-600">Échéance</th>
                                     <th className="text-center p-4 font-semibold text-gray-600">%</th>
+                                    <th className="text-center p-4 font-semibold text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredProjects.map(project => (
-                                    <tr 
-                                        key={project.id} 
+                                    <tr
+                                        key={project.id}
                                         className={`border-b hover:bg-gray-50 transition-colors priority-${project.priority.toLowerCase()}`}
                                     >
                                         <td className="p-4">
@@ -584,11 +849,38 @@
                                                 <span className="text-xs text-gray-500 w-8">{project.progress}%</span>
                                             </div>
                                         </td>
+                                        <td className="p-4">
+                                            <div className="flex gap-2 justify-center">
+                                                <button
+                                                    onClick={() => openEditModal(project)}
+                                                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
+                                                    title="Modifier"
+                                                >
+                                                    ✏️
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteProject(project.id)}
+                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+                                                    title="Supprimer"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Modal d'édition */}
+                    {isModalOpen && (
+                        <ProjectModal
+                            project={editingProject}
+                            onSave={handleSaveProject}
+                            onClose={closeModal}
+                        />
+                    )}
                 </div>
             );
         };

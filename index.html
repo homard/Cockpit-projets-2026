@@ -8,81 +8,106 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
+                        // Style Anthropic
+                        cream: '#faf9f7',
+                        sand: '#f5f3ef',
+                        beige: '#e8e4df',
+                        stone: '#d4cfc7',
+                        clay: '#1a1a1a',
+                        terracotta: '#d97706',
+                        'terracotta-light': '#fef3c7',
+                        // Couleurs fonctionnelles
                         manche: {
-                            blue: '#1a4480',
-                            gold: '#e8a825',
-                            light: '#f0f4f8',
-                            dark: '#0d2240',
+                            blue: '#525252',
+                            gold: '#d97706',
+                            light: '#faf9f7',
+                            dark: '#1a1a1a',
                         }
                     },
                     fontFamily: {
-                        sans: ['Source Sans Pro', 'sans-serif'],
-                        display: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        * { font-family: 'Source Sans Pro', sans-serif; }
-        .gradient-header {
-            background: linear-gradient(135deg, #1a4480 0%, #0d2240 100%);
+        * { font-family: 'Inter', system-ui, sans-serif; }
+
+        /* Style Anthropic - Minimaliste et sobre */
+        .sidebar-modern {
+            background: #faf9f7;
+            border-right: 1px solid #e8e4df;
         }
-        .card-shadow {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        .card-modern {
+            background: white;
+            border: 1px solid #e8e4df;
+            transition: all 0.15s ease;
+        }
+        .card-modern:hover {
+            border-color: #d4cfc7;
         }
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            transition: all 0.15s ease;
+            border-radius: 6px;
+            margin: 2px 8px;
         }
         .nav-item:hover {
-            background: rgba(255,255,255,0.1);
+            background: #f5f3ef;
         }
         .nav-item.active {
-            background: rgba(255,255,255,0.15);
-            border-left: 3px solid #e8a825;
+            background: #f5f3ef;
+            color: #d97706;
+        }
+        .nav-item.active .nav-icon {
+            color: #d97706;
         }
         .timeline-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             position: absolute;
-            left: -6px;
+            left: -5px;
             top: 50%;
             transform: translateY(-50%);
+            border: 2px solid white;
         }
         .checkbox-custom:checked {
-            background-color: #1a4480;
-            border-color: #1a4480;
+            background-color: #d97706;
+            border-color: #d97706;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+            animation: fadeIn 0.2s ease-out forwards;
         }
-        .priority-p0 { border-left: 4px solid #dc2626; }
-        .priority-p1 { border-left: 4px solid #f59e0b; }
-        .priority-p2 { border-left: 4px solid #3b82f6; }
-        .priority-p3 { border-left: 4px solid #6b7280; }
+        .priority-p0 { border-left: 3px solid #dc2626; }
+        .priority-p1 { border-left: 3px solid #f59e0b; }
+        .priority-p2 { border-left: 3px solid #6b7280; }
+        .priority-p3 { border-left: 3px solid #d4cfc7; }
 
-        /* Notifications */
+        /* Notifications - Style moderne */
         .notification-panel {
             position: fixed;
             top: 0;
-            right: -400px;
-            width: 400px;
+            right: -420px;
+            width: 420px;
             height: 100vh;
-            background: white;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-            transition: right 0.3s ease;
+            background: #faf9f7;
+            border-left: 1px solid #e8e4df;
+            transition: right 0.25s ease;
             z-index: 100;
             overflow-y: auto;
         }
@@ -91,36 +116,37 @@
         }
         .notification-badge {
             position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #dc2626;
+            top: -4px;
+            right: -4px;
+            background: #d97706;
             color: white;
-            font-size: 11px;
-            font-weight: bold;
-            min-width: 18px;
-            height: 18px;
+            font-size: 10px;
+            font-weight: 600;
+            min-width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Recherche globale */
+        /* Recherche globale - Style épuré */
         .search-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(26,26,26,0.4);
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding-top: 100px;
+            padding-top: 80px;
             z-index: 200;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
+            transition: opacity 0.15s, visibility 0.15s;
         }
         .search-overlay.open {
             opacity: 1;
@@ -128,32 +154,62 @@
         }
         .search-container {
             background: white;
-            border-radius: 12px;
-            width: 600px;
+            border-radius: 8px;
+            width: 560px;
             max-height: 70vh;
             overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-            transform: translateY(-20px);
-            transition: transform 0.2s;
+            border: 1px solid #e8e4df;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+            transform: translateY(-12px);
+            transition: transform 0.15s;
         }
         .search-overlay.open .search-container {
             transform: translateY(0);
         }
         .search-result:hover {
-            background: #f0f4f8;
+            background: #f5f3ef;
         }
 
-        /* Pulse animation pour les alertes */
-        @keyframes pulse {
+        /* Animation subtile pour les alertes */
+        @keyframes subtlePulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.7; }
         }
         .animate-pulse {
-            animation: pulse 2s ease-in-out infinite;
+            animation: subtlePulse 2.5s ease-in-out infinite;
+        }
+
+        /* Boutons modernes */
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+            transition: all 0.15s ease;
+        }
+        .btn-primary:hover {
+            background: #333;
+        }
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e8e4df;
+            color: #1a1a1a;
+            transition: all 0.15s ease;
+        }
+        .btn-secondary:hover {
+            background: #f5f3ef;
+            border-color: #d4cfc7;
+        }
+
+        /* Icônes SVG inline */
+        .icon {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-cream">
     <div id="root"></div>
     
     <script type="text/babel">
@@ -335,16 +391,71 @@
         // COMPOSANTS
         // ========================================
 
+        // Icônes SVG modernes (style Lucide)
+        const Icons = {
+            dashboard: () => (
+                <svg className="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            ),
+            folder: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            ),
+            target: () => (
+                <svg className="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            ),
+            calendar: () => (
+                <svg className="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ),
+            checkSquare: () => (
+                <svg className="icon" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            ),
+            refresh: () => (
+                <svg className="icon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            ),
+            trophy: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            ),
+            download: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            ),
+            upload: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            ),
+            search: () => (
+                <svg className="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            ),
+            bell: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            ),
+            x: () => (
+                <svg className="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            ),
+            plus: () => (
+                <svg className="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            ),
+            edit: () => (
+                <svg className="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            ),
+            trash: () => (
+                <svg className="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            ),
+            alertCircle: () => (
+                <svg className="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            ),
+            check: () => (
+                <svg className="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            ),
+        };
+
         // Navigation latérale
         const Sidebar = ({ activeTab, setActiveTab, onExport, onImport }) => {
             const navItems = [
-                { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
-                { id: 'projects', label: 'Projets', icon: '📁' },
-                { id: 'retroplanning', label: 'Rétro-planning IA', icon: '🎯' },
-                { id: 'calendar', label: 'Calendrier', icon: '📅' },
-                { id: 'checklist', label: 'Check-lists', icon: '✅' },
-                { id: 'weekly', label: 'Revue hebdo', icon: '🔄' },
-                { id: 'objectives', label: 'Objectifs 2026', icon: '🏆' },
+                { id: 'dashboard', label: 'Tableau de bord', icon: Icons.dashboard },
+                { id: 'projects', label: 'Projets', icon: Icons.folder },
+                { id: 'retroplanning', label: 'Rétro-planning IA', icon: Icons.target },
+                { id: 'calendar', label: 'Calendrier', icon: Icons.calendar },
+                { id: 'checklist', label: 'Check-lists', icon: Icons.checkSquare },
+                { id: 'weekly', label: 'Revue hebdo', icon: Icons.refresh },
+                { id: 'objectives', label: 'Objectifs 2026', icon: Icons.trophy },
             ];
 
             const fileInputRef = React.useRef(null);
@@ -371,38 +482,38 @@
             };
 
             return (
-                <aside className="w-64 gradient-header min-h-screen fixed left-0 top-0 text-white">
-                    <div className="p-6 border-b border-white/10">
-                        <h1 className="font-display text-xl font-bold text-manche-gold">Cockpit Projets</h1>
-                        <p className="text-sm text-white/70 mt-1">DSIM - 2026</p>
+                <aside className="w-60 sidebar-modern min-h-screen fixed left-0 top-0">
+                    <div className="p-5 border-b border-beige">
+                        <h1 className="text-lg font-semibold text-clay">Cockpit Projets</h1>
+                        <p className="text-xs text-stone mt-0.5">DSIM — 2026</p>
                     </div>
-                    <nav className="mt-4">
+                    <nav className="mt-3 px-2">
                         {navItems.map(item => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
-                                className={`nav-item w-full text-left px-6 py-3 flex items-center gap-3 transition-all ${activeTab === item.id ? 'active' : ''}`}
+                                className={`nav-item w-full text-left px-3 py-2.5 flex items-center gap-3 ${activeTab === item.id ? 'active text-terracotta' : 'text-stone'}`}
                             >
-                                <span className="text-lg">{item.icon}</span>
-                                <span className="font-medium">{item.label}</span>
+                                <span className="nav-icon text-gray-400">{item.icon()}</span>
+                                <span className="text-sm font-medium">{item.label}</span>
                             </button>
                         ))}
                     </nav>
 
                     {/* Boutons Export/Import */}
-                    <div className="absolute bottom-20 left-0 right-0 px-4">
-                        <div className="border-t border-white/10 pt-4 space-y-2">
+                    <div className="absolute bottom-16 left-0 right-0 px-3">
+                        <div className="border-t border-beige pt-3 space-y-1.5">
                             <button
                                 onClick={onExport}
-                                className="w-full px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 btn-secondary rounded-md text-xs font-medium flex items-center gap-2"
                             >
-                                <span>💾</span> Exporter (JSON)
+                                <Icons.download /> Exporter
                             </button>
                             <button
                                 onClick={handleImportClick}
-                                className="w-full px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 btn-secondary rounded-md text-xs font-medium flex items-center gap-2"
                             >
-                                <span>📂</span> Importer (JSON)
+                                <Icons.upload /> Importer
                             </button>
                             <input
                                 ref={fileInputRef}
@@ -414,9 +525,9 @@
                         </div>
                     </div>
 
-                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
-                        <p className="text-xs text-white/50 text-center">
-                            Chef de projet<br/>Transformation Numérique
+                    <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-beige">
+                        <p className="text-xs text-stone text-center">
+                            Transformation Numérique
                         </p>
                     </div>
                 </aside>
@@ -425,53 +536,53 @@
 
         // Carte statistique
         const StatCard = ({ label, value, icon, color, subtext }) => (
-            <div className={`stat-card bg-white rounded-xl p-5 card-shadow transition-all duration-200 border-l-4 ${color}`}>
+            <div className={`stat-card card-modern rounded-lg p-5 transition-all duration-150 ${color}`}>
                 <div className="flex justify-between items-start">
                     <div>
-                        <p className="text-gray-500 text-sm font-medium">{label}</p>
-                        <p className="text-3xl font-bold text-gray-800 mt-1">{value}</p>
-                        {subtext && <p className="text-xs text-gray-400 mt-1">{subtext}</p>}
+                        <p className="text-stone text-xs font-medium uppercase tracking-wide">{label}</p>
+                        <p className="text-2xl font-semibold text-clay mt-1">{value}</p>
+                        {subtext && <p className="text-xs text-stone mt-1">{subtext}</p>}
                     </div>
-                    <span className="text-2xl">{icon}</span>
+                    <span className="text-gray-300">{icon}</span>
                 </div>
             </div>
         );
 
-        // Badge d'alerte
+        // Badge d'alerte (style minimaliste)
         const AlertBadge = ({ level }) => {
-            const colors = {
-                red: 'bg-red-100 text-red-700',
-                yellow: 'bg-yellow-100 text-yellow-700',
-                green: 'bg-green-100 text-green-700'
+            const styles = {
+                red: 'bg-red-50 text-red-600 border border-red-200',
+                yellow: 'bg-amber-50 text-amber-600 border border-amber-200',
+                green: 'bg-emerald-50 text-emerald-600 border border-emerald-200'
             };
-            const labels = { red: '🔴', yellow: '🟡', green: '🟢' };
+            const dots = { red: '●', yellow: '●', green: '●' };
             return (
-                <span className={`px-2 py-1 rounded-full text-sm ${colors[level]}`}>
-                    {labels[level]}
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${styles[level]}`}>
+                    {dots[level]}
                 </span>
             );
         };
 
-        // Badge de priorité
+        // Badge de priorité (style sobre)
         const PriorityBadge = ({ priority }) => {
-            const colors = {
-                P0: 'bg-red-600 text-white',
-                P1: 'bg-orange-500 text-white',
-                P2: 'bg-blue-500 text-white',
-                P3: 'bg-gray-400 text-white'
+            const styles = {
+                P0: 'bg-red-50 text-red-700 border border-red-200',
+                P1: 'bg-amber-50 text-amber-700 border border-amber-200',
+                P2: 'bg-gray-100 text-stone border border-gray-200',
+                P3: 'bg-gray-50 text-gray-400 border border-gray-100'
             };
             return (
-                <span className={`px-2 py-0.5 rounded text-xs font-bold ${colors[priority]}`}>
+                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${styles[priority]}`}>
                     {priority}
                 </span>
             );
         };
 
-        // Barre de progression
+        // Barre de progression (style Anthropic)
         const ProgressBar = ({ value }) => (
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-sand rounded-full h-1.5">
                 <div
-                    className="bg-manche-blue h-2 rounded-full transition-all duration-300"
+                    className="bg-terracotta h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${value}%` }}
                 />
             </div>
@@ -547,44 +658,44 @@
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Barre de recherche */}
-                        <div className="p-4 border-b flex items-center gap-3">
-                            <span className="text-gray-400 text-xl">🔍</span>
+                        <div className="p-4 border-b border-beige flex items-center gap-3">
+                            <span className="text-stone"><Icons.search /></span>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Rechercher projets, événements, actions..."
-                                className="flex-1 text-lg outline-none"
+                                className="flex-1 text-base outline-none bg-transparent text-clay placeholder-stone"
                             />
-                            <kbd className="px-2 py-1 bg-gray-100 rounded text-xs text-gray-500">ESC</kbd>
+                            <kbd className="px-2 py-1 bg-sand rounded text-xs text-stone font-medium">ESC</kbd>
                         </div>
 
                         {/* Résultats */}
                         <div className="max-h-96 overflow-y-auto">
                             {!query.trim() ? (
-                                <div className="p-8 text-center text-gray-400">
-                                    <p className="text-lg mb-2">Tapez pour rechercher</p>
-                                    <p className="text-sm">Raccourci: <kbd className="px-2 py-1 bg-gray-100 rounded">Ctrl+K</kbd></p>
+                                <div className="p-8 text-center text-stone">
+                                    <p className="text-sm mb-2">Tapez pour rechercher</p>
+                                    <p className="text-xs">Raccourci: <kbd className="px-2 py-1 bg-sand rounded font-medium">Ctrl+K</kbd></p>
                                 </div>
                             ) : (
                                 <>
                                     {/* Projets trouvés */}
                                     {searchResults.projects.length > 0 && (
                                         <div className="p-2">
-                                            <p className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
+                                            <p className="px-3 py-2 text-xs font-medium text-stone uppercase tracking-wide">
                                                 Projets ({searchResults.projects.length})
                                             </p>
                                             {searchResults.projects.map(project => (
                                                 <div
                                                     key={project.id}
                                                     onClick={() => handleResultClick('project', project)}
-                                                    className="search-result p-3 rounded-lg cursor-pointer flex items-center gap-3"
+                                                    className="search-result p-3 rounded-md cursor-pointer flex items-center gap-3"
                                                 >
-                                                    <span className="text-xl">📁</span>
+                                                    <span className="text-stone"><Icons.folder /></span>
                                                     <div className="flex-1">
-                                                        <p className="font-medium text-gray-800">{project.name}</p>
-                                                        <p className="text-sm text-gray-500">{project.program} • {project.nextAction}</p>
+                                                        <p className="font-medium text-clay text-sm">{project.name}</p>
+                                                        <p className="text-xs text-stone">{project.program} · {project.nextAction}</p>
                                                     </div>
                                                     <AlertBadge level={project.alert} />
                                                 </div>
@@ -594,25 +705,25 @@
 
                                     {/* Événements trouvés */}
                                     {searchResults.calendar.length > 0 && (
-                                        <div className="p-2 border-t">
-                                            <p className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
+                                        <div className="p-2 border-t border-beige">
+                                            <p className="px-3 py-2 text-xs font-medium text-stone uppercase tracking-wide">
                                                 Événements ({searchResults.calendar.length})
                                             </p>
                                             {searchResults.calendar.map((event, idx) => (
                                                 <div
                                                     key={idx}
                                                     onClick={() => handleResultClick('calendar', event)}
-                                                    className="search-result p-3 rounded-lg cursor-pointer flex items-center gap-3"
+                                                    className="search-result p-3 rounded-md cursor-pointer flex items-center gap-3"
                                                 >
-                                                    <span className="text-xl">📅</span>
+                                                    <span className="text-stone"><Icons.calendar /></span>
                                                     <div className="flex-1">
-                                                        <p className="font-medium text-gray-800">{event.label}</p>
-                                                        <p className="text-sm text-gray-500">
+                                                        <p className="font-medium text-clay text-sm">{event.label}</p>
+                                                        <p className="text-xs text-stone">
                                                             {new Date(event.date).toLocaleDateString('fr-FR')}
-                                                            {event.project && ` • ${event.project}`}
+                                                            {event.project && ` · ${event.project}`}
                                                         </p>
                                                     </div>
-                                                    {event.critical && <span className="text-red-500">⚠️</span>}
+                                                    {event.critical && <span className="text-red-500"><Icons.alertCircle /></span>}
                                                 </div>
                                             ))}
                                         </div>
@@ -620,8 +731,8 @@
 
                                     {/* Aucun résultat */}
                                     {searchResults.projects.length === 0 && searchResults.calendar.length === 0 && (
-                                        <div className="p-8 text-center text-gray-400">
-                                            <p className="text-lg">Aucun résultat pour "{query}"</p>
+                                        <div className="p-8 text-center text-stone">
+                                            <p className="text-sm">Aucun résultat pour "{query}"</p>
                                         </div>
                                     )}
                                 </>
@@ -740,43 +851,43 @@
 
                     {/* Panel */}
                     <div className={`notification-panel ${isOpen ? 'open' : ''}`}>
-                        <div className="gradient-header text-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-                            <h3 className="text-lg font-bold flex items-center gap-2">
-                                <span>🔔</span> Notifications
+                        <div className="bg-cream px-5 py-4 flex justify-between items-center sticky top-0 z-10 border-b border-beige">
+                            <h3 className="text-base font-semibold text-clay flex items-center gap-2">
+                                <Icons.bell /> Notifications
                             </h3>
                             <button
                                 onClick={onClose}
-                                className="text-white hover:text-manche-gold text-2xl"
+                                className="text-stone hover:text-clay p-1 rounded-md hover:bg-sand transition-colors"
                             >
-                                &times;
+                                <Icons.x />
                             </button>
                         </div>
 
                         <div className="p-4">
                             {notifications.length === 0 ? (
-                                <div className="text-center py-12 text-gray-400">
-                                    <span className="text-4xl block mb-3">✅</span>
-                                    <p>Aucune échéance proche</p>
-                                    <p className="text-sm">Tout est sous contrôle !</p>
+                                <div className="text-center py-12 text-stone">
+                                    <span className="text-stone block mb-3"><Icons.check /></span>
+                                    <p className="text-sm">Aucune échéance proche</p>
+                                    <p className="text-xs mt-1">Tout est sous contrôle</p>
                                 </div>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     {notifications.map((notif, idx) => (
                                         <div
                                             key={idx}
-                                            className={`p-4 rounded-lg border ${getPriorityColor(notif.priority)} ${notif.priority === 'critical' ? 'animate-pulse' : ''}`}
+                                            className={`p-3 rounded-md border ${getPriorityColor(notif.priority)} ${notif.priority === 'critical' ? 'animate-pulse' : ''}`}
                                         >
                                             <div className="flex items-start gap-3">
-                                                <span className="text-2xl">{notif.icon}</span>
+                                                <span className="text-stone mt-0.5"><Icons.alertCircle /></span>
                                                 <div className="flex-1">
-                                                    <p className="font-semibold text-gray-800">{notif.title}</p>
-                                                    <p className="text-sm text-gray-600">{notif.message}</p>
+                                                    <p className="font-medium text-clay text-sm">{notif.title}</p>
+                                                    <p className="text-xs text-stone mt-0.5">{notif.message}</p>
                                                     {notif.project && (
-                                                        <p className="text-xs text-gray-500 mt-1">
-                                                            Projet: {notif.project}
+                                                        <p className="text-xs text-stone mt-1">
+                                                            {notif.project}
                                                         </p>
                                                     )}
-                                                    <p className="text-xs text-gray-400 mt-1">
+                                                    <p className="text-xs text-stone mt-1">
                                                         {new Date(notif.date).toLocaleDateString('fr-FR', {
                                                             weekday: 'long',
                                                             day: 'numeric',
@@ -792,13 +903,13 @@
                         </div>
 
                         {/* Légende */}
-                        <div className="p-4 border-t bg-gray-50">
-                            <p className="text-xs font-semibold text-gray-500 mb-2">Légende</p>
-                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-400"></span> Critique/En retard</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-orange-400"></span> Aujourd'hui</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-yellow-400"></span> Sous 3 jours</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-blue-400"></span> Cette semaine</span>
+                        <div className="p-4 border-t border-beige bg-sand">
+                            <p className="text-xs font-medium text-stone mb-2 uppercase tracking-wide">Légende</p>
+                            <div className="grid grid-cols-2 gap-2 text-xs text-stone">
+                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-400"></span> Critique</span>
+                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Urgent</span>
+                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-300"></span> Sous 3 jours</span>
+                                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span> Cette semaine</span>
                             </div>
                         </div>
                     </div>
@@ -826,66 +937,66 @@
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Tableau de bord</h2>
-                        <p className="text-gray-500">Vue d'ensemble de votre portefeuille projets</p>
+                        <h2 className="text-xl font-semibold text-clay">Tableau de bord</h2>
+                        <p className="text-sm text-stone mt-1">Vue d'ensemble de votre portefeuille projets</p>
                     </div>
 
                     {/* KPIs */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <StatCard 
-                            label="Projets actifs" 
-                            value={stats.activeProjects} 
-                            icon="📂" 
-                            color="border-manche-blue"
+                        <StatCard
+                            label="Projets actifs"
+                            value={stats.activeProjects}
+                            icon={<Icons.folder />}
+                            color="border-l-3 border-l-stone"
                             subtext={`sur ${projects.length} projets`}
                         />
-                        <StatCard 
-                            label="En alerte" 
-                            value={stats.alertProjects} 
-                            icon="⚠️" 
-                            color="border-red-500"
+                        <StatCard
+                            label="En alerte"
+                            value={stats.alertProjects}
+                            icon={<Icons.alertCircle />}
+                            color="border-l-3 border-l-red-400"
                             subtext="nécessitent attention"
                         />
-                        <StatCard 
-                            label="Échéances 30j" 
-                            value={stats.upcomingDeadlines} 
-                            icon="📅" 
-                            color="border-manche-gold"
+                        <StatCard
+                            label="Échéances 30j"
+                            value={stats.upcomingDeadlines}
+                            icon={<Icons.calendar />}
+                            color="border-l-3 border-l-terracotta"
                         />
-                        <StatCard 
-                            label="Prochaine instance" 
-                            value={nextDeadline ? new Date(nextDeadline.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : '-'} 
-                            icon="🏛️" 
-                            color="border-green-500"
+                        <StatCard
+                            label="Prochaine instance"
+                            value={nextDeadline ? new Date(nextDeadline.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : '-'}
+                            icon={<Icons.target />}
+                            color="border-l-3 border-l-emerald-400"
                             subtext={nextDeadline?.label}
                         />
                     </div>
 
                     {/* Projets critiques */}
-                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <span className="text-red-500">🔴</span> Projets prioritaires (P0 / En alerte)
+                    <div className="card-modern rounded-lg p-5 mb-5">
+                        <h3 className="text-base font-semibold text-clay mb-4 flex items-center gap-2">
+                            <span className="text-red-500"><Icons.alertCircle /></span> Projets prioritaires
                         </h3>
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {criticalProjects.map(project => (
-                                <div key={project.id} className={`p-4 rounded-lg bg-gray-50 priority-${project.priority.toLowerCase()}`}>
+                                <div key={project.id} className={`p-4 rounded-md bg-sand priority-${project.priority.toLowerCase()}`}>
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <PriorityBadge priority={project.priority} />
-                                                <span className="font-semibold text-gray-800">{project.name}</span>
+                                                <span className="font-medium text-clay text-sm">{project.name}</span>
                                             </div>
-                                            <p className="text-sm text-gray-600">{project.nextAction}</p>
+                                            <p className="text-xs text-stone">{project.nextAction}</p>
                                         </div>
                                         <div className="text-right">
                                             <AlertBadge level={project.alert} />
-                                            <p className="text-sm text-gray-500 mt-1">
+                                            <p className="text-xs text-stone mt-1">
                                                 {new Date(project.deadline).toLocaleDateString('fr-FR')}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="mt-3">
-                                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                        <div className="flex justify-between text-xs text-stone mb-1">
                                             <span>Avancement</span>
                                             <span>{project.progress}%</span>
                                         </div>
@@ -897,24 +1008,24 @@
                     </div>
 
                     {/* Prochaines échéances */}
-                    <div className="bg-white rounded-xl card-shadow p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <span>🏛️</span> Prochaines échéances institutionnelles
+                    <div className="card-modern rounded-lg p-5">
+                        <h3 className="text-base font-semibold text-clay mb-4 flex items-center gap-2">
+                            <span className="text-stone"><Icons.calendar /></span> Prochaines échéances
                         </h3>
-                        <div className="space-y-2">
+                        <div className="space-y-1">
                             {calendar.filter(c => new Date(c.date) >= today).slice(0, 5).map((event, idx) => (
-                                <div 
-                                    key={idx} 
-                                    className={`flex items-center justify-between p-3 rounded-lg ${event.critical ? 'bg-red-50 border border-red-200' : 'bg-gray-50'}`}
+                                <div
+                                    key={idx}
+                                    className={`flex items-center justify-between p-3 rounded-md ${event.critical ? 'bg-red-50 border border-red-100' : 'bg-sand'}`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className={`text-sm font-bold ${event.critical ? 'text-red-600' : 'text-manche-blue'}`}>
+                                        <span className={`text-xs font-semibold ${event.critical ? 'text-red-600' : 'text-stone'}`}>
                                             {new Date(event.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
                                         </span>
-                                        <span className="text-gray-700">{event.label}</span>
+                                        <span className="text-sm text-clay">{event.label}</span>
                                     </div>
                                     {event.project && (
-                                        <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded">
+                                        <span className="text-xs text-stone bg-white px-2 py-1 rounded border border-beige">
                                             {event.project}
                                         </span>
                                     )}
@@ -955,38 +1066,40 @@
             };
 
             return (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={onClose}>
-                    <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <div className="gradient-header text-white px-6 py-4 flex justify-between items-center sticky top-0">
-                            <h3 className="text-xl font-bold">
-                                {project ? '✏️ Modifier le projet' : '➕ Nouveau projet'}
+                <div className="fixed inset-0 bg-clay/40 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+                    <div className="bg-white rounded-lg border border-beige max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-cream px-5 py-4 flex justify-between items-center sticky top-0 border-b border-beige">
+                            <h3 className="text-base font-semibold text-clay flex items-center gap-2">
+                                {project ? <><Icons.edit /> Modifier le projet</> : <><Icons.plus /> Nouveau projet</>}
                             </h3>
-                            <button onClick={onClose} className="text-white hover:text-manche-gold text-2xl">&times;</button>
+                            <button onClick={onClose} className="text-stone hover:text-clay p-1 rounded-md hover:bg-sand transition-colors">
+                                <Icons.x />
+                            </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="p-5 space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {/* Nom du projet */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">
                                         Nom du projet <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => handleChange('name', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors"
                                         required
                                     />
                                 </div>
 
                                 {/* Programme */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Programme</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Programme</label>
                                     <select
                                         value={formData.program}
                                         onChange={(e) => handleChange('program', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
                                         <option>Stratégie IA/Data</option>
                                         <option>Modernisation</option>
@@ -996,11 +1109,11 @@
 
                                 {/* Processus */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Processus</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Processus</label>
                                     <select
                                         value={formData.process}
                                         onChange={(e) => handleChange('process', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
                                         <option>Conception</option>
                                         <option>Mise en œuvre</option>
@@ -1010,11 +1123,11 @@
 
                                 {/* Phase */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Phase</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Phase</label>
                                     <select
                                         value={formData.phase}
                                         onChange={(e) => handleChange('phase', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
                                         <option>À lancer</option>
                                         <option>Initialisation</option>
@@ -1026,11 +1139,11 @@
 
                                 {/* Statut */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Statut</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Statut</label>
                                     <select
                                         value={formData.status}
                                         onChange={(e) => handleChange('status', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
                                         <option>À planifier</option>
                                         <option>En cours</option>
@@ -1041,11 +1154,11 @@
 
                                 {/* Priorité */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Priorité</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Priorité</label>
                                     <select
                                         value={formData.priority}
                                         onChange={(e) => handleChange('priority', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
                                         <option>P0</option>
                                         <option>P1</option>
@@ -1056,21 +1169,21 @@
 
                                 {/* Alerte */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Niveau d'alerte</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Niveau d'alerte</label>
                                     <select
                                         value={formData.alert}
                                         onChange={(e) => handleChange('alert', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors bg-white"
                                     >
-                                        <option value="green">🟢 Vert - OK</option>
-                                        <option value="yellow">🟡 Jaune - Vigilance</option>
-                                        <option value="red">🔴 Rouge - Alerte</option>
+                                        <option value="green">Vert - OK</option>
+                                        <option value="yellow">Jaune - Vigilance</option>
+                                        <option value="red">Rouge - Alerte</option>
                                     </select>
                                 </div>
 
                                 {/* Progression */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">
                                         Progression ({formData.progress}%)
                                     </label>
                                     <input
@@ -1079,69 +1192,69 @@
                                         max="100"
                                         value={formData.progress}
                                         onChange={(e) => handleChange('progress', parseInt(e.target.value))}
-                                        className="w-full"
+                                        className="w-full accent-terracotta"
                                     />
                                 </div>
 
                                 {/* Échéance */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Échéance</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Échéance</label>
                                     <input
                                         type="date"
                                         value={formData.deadline}
                                         onChange={(e) => handleChange('deadline', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors"
                                     />
                                 </div>
 
                                 {/* Responsable */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Responsable</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Responsable</label>
                                     <input
                                         type="text"
                                         value={formData.responsible}
                                         onChange={(e) => handleChange('responsible', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors"
                                         placeholder="Nom du responsable"
                                     />
                                 </div>
 
                                 {/* Prochaine action */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Prochaine action</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Prochaine action</label>
                                     <input
                                         type="text"
                                         value={formData.nextAction}
                                         onChange={(e) => handleChange('nextAction', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors"
                                         placeholder="Quelle est la prochaine étape ?"
                                     />
                                 </div>
 
                                 {/* Notes */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Notes</label>
+                                    <label className="block text-xs font-medium text-stone mb-1.5 uppercase tracking-wide">Notes</label>
                                     <textarea
                                         value={formData.notes}
                                         onChange={(e) => handleChange('notes', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-manche-blue focus:outline-none h-24"
+                                        className="w-full border border-beige rounded-md px-3 py-2 text-sm focus:border-terracotta focus:outline-none focus:ring-1 focus:ring-terracotta/20 transition-colors h-24 resize-none"
                                         placeholder="Notes additionnelles..."
                                     />
                                 </div>
                             </div>
 
                             {/* Boutons d'action */}
-                            <div className="flex gap-3 pt-4 border-t">
+                            <div className="flex gap-3 pt-4 border-t border-beige">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-manche-blue text-white py-2 px-4 rounded-lg font-medium hover:bg-manche-dark transition-colors"
+                                    className="flex-1 btn-primary py-2.5 px-4 rounded-md text-sm font-medium flex items-center justify-center gap-2"
                                 >
-                                    💾 Enregistrer
+                                    <Icons.check /> Enregistrer
                                 </button>
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="px-6 bg-gray-200 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                                    className="px-5 btn-secondary py-2.5 rounded-md text-sm font-medium"
                                 >
                                     Annuler
                                 </button>
@@ -1204,24 +1317,24 @@
                 <div className="animate-fade-in">
                     <div className="flex justify-between items-center mb-6">
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800">Portefeuille Projets</h2>
-                            <p className="text-gray-500">{projects.length} projets au total</p>
+                            <h2 className="text-xl font-semibold text-clay">Portefeuille Projets</h2>
+                            <p className="text-sm text-stone mt-1">{projects.length} projets au total</p>
                         </div>
                         <div className="flex gap-2 items-center">
                             <button
                                 onClick={openNewModal}
-                                className="px-4 py-2 bg-manche-gold text-white rounded-lg font-medium hover:bg-yellow-600 transition-colors flex items-center gap-2"
+                                className="px-3 py-2 btn-primary rounded-md text-sm font-medium flex items-center gap-2"
                             >
-                                <span>➕</span> Nouveau projet
+                                <Icons.plus /> Nouveau projet
                             </button>
                             {['all', 'active', 'alert', 'Stratégie IA/Data', 'Modernisation'].map(f => (
                                 <button
                                     key={f}
                                     onClick={() => setFilter(f)}
-                                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                                         filter === f
-                                            ? 'bg-manche-blue text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            ? 'bg-clay text-white'
+                                            : 'bg-sand text-stone hover:bg-beige'
                                     }`}
                                 >
                                     {f === 'all' ? 'Tous' : f === 'active' ? 'Actifs' : f === 'alert' ? 'En alerte' : f}
@@ -1230,39 +1343,39 @@
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl card-shadow overflow-hidden">
+                    <div className="card-modern rounded-lg overflow-hidden">
                         <table className="w-full">
-                            <thead className="bg-gray-50 border-b">
+                            <thead className="bg-sand border-b border-beige">
                                 <tr>
-                                    <th className="text-left p-4 font-semibold text-gray-600">Projet</th>
-                                    <th className="text-left p-4 font-semibold text-gray-600">Phase</th>
-                                    <th className="text-left p-4 font-semibold text-gray-600">Statut</th>
-                                    <th className="text-center p-4 font-semibold text-gray-600">Prio</th>
-                                    <th className="text-center p-4 font-semibold text-gray-600">Alerte</th>
-                                    <th className="text-left p-4 font-semibold text-gray-600">Prochaine action</th>
-                                    <th className="text-center p-4 font-semibold text-gray-600">Échéance</th>
-                                    <th className="text-center p-4 font-semibold text-gray-600">%</th>
-                                    <th className="text-center p-4 font-semibold text-gray-600">Actions</th>
+                                    <th className="text-left p-3 text-xs font-medium text-stone uppercase tracking-wide">Projet</th>
+                                    <th className="text-left p-3 text-xs font-medium text-stone uppercase tracking-wide">Phase</th>
+                                    <th className="text-left p-3 text-xs font-medium text-stone uppercase tracking-wide">Statut</th>
+                                    <th className="text-center p-3 text-xs font-medium text-stone uppercase tracking-wide">Prio</th>
+                                    <th className="text-center p-3 text-xs font-medium text-stone uppercase tracking-wide">Alerte</th>
+                                    <th className="text-left p-3 text-xs font-medium text-stone uppercase tracking-wide">Prochaine action</th>
+                                    <th className="text-center p-3 text-xs font-medium text-stone uppercase tracking-wide">Échéance</th>
+                                    <th className="text-center p-3 text-xs font-medium text-stone uppercase tracking-wide">%</th>
+                                    <th className="text-center p-3 text-xs font-medium text-stone uppercase tracking-wide">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredProjects.map(project => (
                                     <tr
                                         key={project.id}
-                                        className={`border-b hover:bg-gray-50 transition-colors priority-${project.priority.toLowerCase()}`}
+                                        className={`border-b border-beige hover:bg-sand transition-colors priority-${project.priority.toLowerCase()}`}
                                     >
-                                        <td className="p-4">
-                                            <p className="font-medium text-gray-800">{project.name}</p>
-                                            <p className="text-xs text-gray-500">{project.program}</p>
+                                        <td className="p-3">
+                                            <p className="font-medium text-clay text-sm">{project.name}</p>
+                                            <p className="text-xs text-stone">{project.program}</p>
                                         </td>
-                                        <td className="p-4">
-                                            <span className="text-sm text-gray-600">{project.phase}</span>
+                                        <td className="p-3">
+                                            <span className="text-sm text-stone">{project.phase}</span>
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-3">
                                             <select
                                                 value={project.status}
                                                 onChange={(e) => updateProject(project.id, 'status', e.target.value)}
-                                                className="text-sm border rounded px-2 py-1"
+                                                className="text-xs border border-beige rounded-md px-2 py-1 bg-white focus:border-terracotta focus:outline-none"
                                             >
                                                 <option>À planifier</option>
                                                 <option>En cours</option>
@@ -1270,57 +1383,57 @@
                                                 <option>Terminé</option>
                                             </select>
                                         </td>
-                                        <td className="p-4 text-center">
+                                        <td className="p-3 text-center">
                                             <PriorityBadge priority={project.priority} />
                                         </td>
-                                        <td className="p-4 text-center">
+                                        <td className="p-3 text-center">
                                             <select
                                                 value={project.alert}
                                                 onChange={(e) => updateProject(project.id, 'alert', e.target.value)}
-                                                className="text-sm border rounded px-2 py-1"
+                                                className="text-xs border border-beige rounded-md px-2 py-1 bg-white focus:border-terracotta focus:outline-none"
                                             >
-                                                <option value="green">🟢</option>
-                                                <option value="yellow">🟡</option>
-                                                <option value="red">🔴</option>
+                                                <option value="green">Vert</option>
+                                                <option value="yellow">Jaune</option>
+                                                <option value="red">Rouge</option>
                                             </select>
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-3">
                                             <input
                                                 type="text"
                                                 value={project.nextAction}
                                                 onChange={(e) => updateProject(project.id, 'nextAction', e.target.value)}
-                                                className="text-sm w-full border-b border-transparent hover:border-gray-300 focus:border-manche-blue focus:outline-none py-1"
+                                                className="text-xs w-full border-b border-transparent hover:border-beige focus:border-terracotta focus:outline-none py-1 bg-transparent"
                                             />
                                         </td>
-                                        <td className="p-4 text-center">
+                                        <td className="p-3 text-center">
                                             <input
                                                 type="date"
                                                 value={project.deadline}
                                                 onChange={(e) => updateProject(project.id, 'deadline', e.target.value)}
-                                                className="text-sm border rounded px-2 py-1"
+                                                className="text-xs border border-beige rounded-md px-2 py-1 bg-white focus:border-terracotta focus:outline-none"
                                             />
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-3">
                                             <div className="flex items-center gap-2">
                                                 <ProgressBar value={project.progress} />
-                                                <span className="text-xs text-gray-500 w-8">{project.progress}%</span>
+                                                <span className="text-xs text-stone w-8">{project.progress}%</span>
                                             </div>
                                         </td>
-                                        <td className="p-4">
-                                            <div className="flex gap-2 justify-center">
+                                        <td className="p-3">
+                                            <div className="flex gap-1 justify-center">
                                                 <button
                                                     onClick={() => openEditModal(project)}
-                                                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
+                                                    className="p-1.5 text-stone hover:text-terracotta hover:bg-sand rounded transition-colors"
                                                     title="Modifier"
                                                 >
-                                                    ✏️
+                                                    <Icons.edit />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteProject(project.id)}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+                                                    className="p-1.5 text-stone hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                                                     title="Supprimer"
                                                 >
-                                                    🗑️
+                                                    <Icons.trash />
                                                 </button>
                                             </div>
                                         </td>
@@ -1374,13 +1487,13 @@
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Rétro-planning Stratégie IA/Data</h2>
-                        <p className="text-gray-500">Session plénière du 03/04/2026</p>
+                        <h2 className="text-xl font-semibold text-clay">Rétro-planning Stratégie IA/Data</h2>
+                        <p className="text-stone">Session plénière du 03/04/2026</p>
                     </div>
 
                     {/* Timeline visuelle */}
-                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-6">📅 Jalons clés</h3>
+                    <div className="card-modern rounded-lg p-6 mb-6">
+                        <h3 className="text-base font-semibold text-clay mb-6">📅 Jalons clés</h3>
                         <div className="relative pl-8">
                             <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
                             {milestones.map((milestone, idx) => (
@@ -1398,14 +1511,14 @@
                                                 <span className={`text-sm font-bold ${milestone.critical ? 'text-red-600' : 'text-manche-blue'}`}>
                                                     {milestone.date}
                                                 </span>
-                                                <h4 className="font-semibold text-gray-800">{milestone.label}</h4>
-                                                <p className="text-sm text-gray-600">{milestone.description}</p>
+                                                <h4 className="font-semibold text-clay">{milestone.label}</h4>
+                                                <p className="text-sm text-stone">{milestone.description}</p>
                                             </div>
                                             <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                 milestone.status === 'Critique' ? 'bg-red-100 text-red-700' :
                                                 milestone.status === 'Objectif' ? 'bg-green-100 text-green-700' :
                                                 milestone.status === 'À confirmer' ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-gray-100 text-gray-600'
+                                                'bg-gray-100 text-stone'
                                             }`}>
                                                 {milestone.status}
                                             </span>
@@ -1428,8 +1541,8 @@
                     </div>
 
                     {/* Actions immédiates */}
-                    <div className="bg-white rounded-xl card-shadow p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">🚀 Actions immédiates</h3>
+                    <div className="card-modern rounded-lg p-6">
+                        <h3 className="text-base font-semibold text-clay mb-4">🚀 Actions immédiates</h3>
                         <div className="space-y-2">
                             {actions.map((action, idx) => (
                                 <div 
@@ -1449,7 +1562,7 @@
                                     <span className={`flex-1 ${action.done ? 'line-through text-gray-400' : 'text-gray-700'}`}>
                                         {action.action}
                                     </span>
-                                    <span className="text-sm text-gray-500">{action.deadline}</span>
+                                    <span className="text-sm text-stone">{action.deadline}</span>
                                 </div>
                             ))}
                         </div>
@@ -1478,20 +1591,20 @@
                 if (event.type === 'SP') return 'bg-green-100 border-green-300 text-green-800';
                 if (event.type === 'CP') return 'bg-blue-100 border-blue-300 text-blue-800';
                 if (event.type === 'cible') return 'bg-yellow-100 border-yellow-300 text-yellow-800';
-                return 'bg-gray-100 border-gray-300 text-gray-800';
+                return 'bg-gray-100 border-gray-300 text-clay';
             };
 
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Calendrier Institutionnel 2026</h2>
-                        <p className="text-gray-500">Commissions permanentes, sessions plénières et jalons projets</p>
+                        <h2 className="text-xl font-semibold text-clay">Calendrier Institutionnel 2026</h2>
+                        <p className="text-stone">Commissions permanentes, sessions plénières et jalons projets</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {months.map((month, monthIdx) => (
-                            <div key={month} className="bg-white rounded-xl card-shadow p-4">
-                                <h3 className="font-bold text-gray-800 mb-3 pb-2 border-b">{month} 2026</h3>
+                            <div key={month} className="card-modern rounded-lg p-4">
+                                <h3 className="font-bold text-clay mb-3 pb-2 border-b">{month} 2026</h3>
                                 <div className="space-y-2">
                                     {(eventsByMonth[monthIdx] || []).map((event, idx) => (
                                         <div 
@@ -1521,7 +1634,7 @@
                     </div>
 
                     {/* Légende */}
-                    <div className="mt-6 bg-white rounded-xl card-shadow p-4">
+                    <div className="mt-6 card-modern rounded-lg p-4">
                         <h4 className="font-semibold text-gray-700 mb-3">Légende</h4>
                         <div className="flex flex-wrap gap-4 text-sm">
                             <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-blue-400"></span> CP = Commission Permanente</span>
@@ -1610,8 +1723,8 @@
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Check-lists Méthodologie DSIM</h2>
-                        <p className="text-gray-500">Suivez les étapes de vos processus</p>
+                        <h2 className="text-xl font-semibold text-clay">Check-lists Méthodologie DSIM</h2>
+                        <p className="text-stone">Suivez les étapes de vos processus</p>
                     </div>
 
                     {/* Tabs */}
@@ -1621,7 +1734,7 @@
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                                 activeChecklist === 'conception' 
                                     ? 'bg-manche-blue text-white' 
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    : 'bg-gray-100 text-stone hover:bg-gray-200'
                             }`}
                         >
                             Conception
@@ -1631,7 +1744,7 @@
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                                 activeChecklist === 'mep' 
                                     ? 'bg-manche-blue text-white' 
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    : 'bg-gray-100 text-stone hover:bg-gray-200'
                             }`}
                         >
                             Mise en œuvre
@@ -1639,7 +1752,7 @@
                     </div>
 
                     {/* Progress */}
-                    <div className="bg-white rounded-xl card-shadow p-4 mb-6">
+                    <div className="card-modern rounded-lg p-4 mb-6">
                         <div className="flex justify-between items-center mb-2">
                             <span className="font-medium text-gray-700">Progression globale</span>
                             <span className="text-manche-blue font-bold">{doneTasks}/{totalTasks} tâches</span>
@@ -1655,7 +1768,7 @@
                     {/* Checklist */}
                     <div className="space-y-4">
                         {currentChecklist.map((section, sectionIdx) => (
-                            <div key={sectionIdx} className="bg-white rounded-xl card-shadow overflow-hidden">
+                            <div key={sectionIdx} className="card-modern rounded-lg overflow-hidden">
                                 <div className="bg-manche-blue text-white px-4 py-3 font-semibold">
                                     {section.section}
                                 </div>
@@ -1716,14 +1829,14 @@
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Revue Hebdomadaire</h2>
-                        <p className="text-gray-500">Rituels lundi matin et vendredi après-midi</p>
+                        <h2 className="text-xl font-semibold text-clay">Revue Hebdomadaire</h2>
+                        <p className="text-stone">Rituels lundi matin et vendredi après-midi</p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Revue Lundi */}
-                        <div className="bg-white rounded-xl card-shadow p-6">
-                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div className="card-modern rounded-lg p-6">
+                            <h3 className="text-base font-semibold text-clay mb-4 flex items-center gap-2">
                                 <span>📅</span> Revue Lundi - Planification
                             </h3>
                             <div className="space-y-4">
@@ -1773,8 +1886,8 @@
                         </div>
 
                         {/* Revue Vendredi */}
-                        <div className="bg-white rounded-xl card-shadow p-6">
-                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div className="card-modern rounded-lg p-6">
+                            <h3 className="text-base font-semibold text-clay mb-4 flex items-center gap-2">
                                 <span>✅</span> Revue Vendredi - Bilan
                             </h3>
                             <div className="space-y-4">
@@ -1820,11 +1933,11 @@
 
                     {/* Questions rituelles */}
                     <div className="mt-6 bg-manche-light rounded-xl p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">💡 Questions rituelles</h3>
+                        <h3 className="text-base font-semibold text-clay mb-4">💡 Questions rituelles</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <h4 className="font-semibold text-manche-blue mb-2">LUNDI</h4>
-                                <ul className="text-sm text-gray-600 space-y-1">
+                                <ul className="text-sm text-stone space-y-1">
                                     <li>1. Quelles sont mes 3 priorités absolues ?</li>
                                     <li>2. Quelles échéances institutionnelles arrivent ?</li>
                                     <li>3. Quels projets nécessitent une attention particulière ?</li>
@@ -1833,7 +1946,7 @@
                             </div>
                             <div>
                                 <h4 className="font-semibold text-manche-blue mb-2">VENDREDI</h4>
-                                <ul className="text-sm text-gray-600 space-y-1">
+                                <ul className="text-sm text-stone space-y-1">
                                     <li>1. Qu'ai-je accompli dont je suis fier(e) ?</li>
                                     <li>2. Qu'est-ce qui n'a pas avancé et pourquoi ?</li>
                                     <li>3. Qu'ai-je appris cette semaine ?</li>
@@ -1857,8 +1970,8 @@
             return (
                 <div className="animate-fade-in">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-gray-800">Objectifs 2026</h2>
-                        <p className="text-gray-500">Méthode OKR - À compléter après l'entretien annuel</p>
+                        <h2 className="text-xl font-semibold text-clay">Objectifs 2026</h2>
+                        <p className="text-stone">Méthode OKR - À compléter après l'entretien annuel</p>
                     </div>
 
                     <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6">
@@ -1869,23 +1982,23 @@
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-xl card-shadow p-6 mb-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">💡 Rappel méthode OKR</h3>
+                    <div className="card-modern rounded-lg p-6 mb-6">
+                        <h3 className="text-base font-semibold text-clay mb-4">💡 Rappel méthode OKR</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-manche-blue mb-2">Objectif (O)</h4>
-                                <p className="text-gray-600">Qualitatif, inspirant, ambitieux. Répond à "Où veux-je aller ?"</p>
+                                <p className="text-stone">Qualitatif, inspirant, ambitieux. Répond à "Où veux-je aller ?"</p>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <h4 className="font-semibold text-manche-blue mb-2">Résultat Clé (KR)</h4>
-                                <p className="text-gray-600">Quantitatif, mesurable, spécifique. Répond à "Comment savoir si j'y suis ?"</p>
+                                <p className="text-stone">Quantitatif, mesurable, spécifique. Répond à "Comment savoir si j'y suis ?"</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl card-shadow p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">🎯 Mes objectifs 2026</h3>
-                        <p className="text-gray-500 italic">À compléter après l'entretien annuel...</p>
+                    <div className="card-modern rounded-lg p-6">
+                        <h3 className="text-base font-semibold text-clay mb-4">🎯 Mes objectifs 2026</h3>
+                        <p className="text-stone italic">À compléter après l'entretien annuel...</p>
                     </div>
                 </div>
             );
@@ -2021,25 +2134,25 @@
                         onImport={handleImport}
                     />
 
-                    <main className="ml-64 flex-1 p-8 min-h-screen">
+                    <main className="ml-60 flex-1 p-6 min-h-screen bg-cream">
                         {/* Barre d'outils en haut */}
-                        <div className="fixed top-0 right-0 left-64 bg-white/80 backdrop-blur-sm z-40 px-8 py-3 border-b flex justify-end gap-3">
+                        <div className="fixed top-0 right-0 left-60 bg-cream/90 backdrop-blur-sm z-40 px-6 py-3 border-b border-beige flex justify-end gap-2">
                             {/* Bouton recherche */}
                             <button
                                 onClick={() => setIsSearchOpen(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                                className="flex items-center gap-2 px-3 py-2 btn-secondary rounded-md transition-colors text-stone"
                             >
-                                <span>🔍</span>
+                                <Icons.search />
                                 <span className="text-sm">Rechercher</span>
-                                <kbd className="ml-2 px-2 py-0.5 bg-gray-200 rounded text-xs">Ctrl+K</kbd>
+                                <kbd className="ml-1 px-1.5 py-0.5 bg-sand rounded text-xs font-medium">⌘K</kbd>
                             </button>
 
                             {/* Bouton notifications */}
                             <button
                                 onClick={() => setIsNotifOpen(true)}
-                                className="relative flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                                className="relative flex items-center gap-2 px-3 py-2 btn-secondary rounded-md transition-colors text-stone"
                             >
-                                <span>🔔</span>
+                                <Icons.bell />
                                 <span className="text-sm">Notifications</span>
                                 {notificationCount > 0 && (
                                     <span className="notification-badge">{notificationCount}</span>
@@ -2048,7 +2161,7 @@
                         </div>
 
                         {/* Contenu avec marge pour la barre d'outils */}
-                        <div className="mt-16">
+                        <div className="mt-14">
                             {renderContent()}
                         </div>
                     </main>
